@@ -1,0 +1,24 @@
+      PROGRAM MANDEL
+      PARAMETER(MAXIT = 90, NX = 61, NY = 31)
+      PARAMETER(X0 = -2.0, X1 = 2.0, Y0 = -2.0, Y1 = 2.0)
+      DIMENSION MNDLBR(NX, NY)
+      COMPLEX C, Z
+      DO 10 IY = 1, NY
+        Y = Y0 + (Y1 - Y0) * (IY - 1) / REAL(NY - 1)
+        DO 20 IX = 1, NX
+          X = X0 + (X1 - X0) * (IX - 1) / REAL(NX - 1)
+          Z = (0.0, 0.0)
+          C = CMPLX(X, Y)
+          DO 30 ITER = 0, MAXIT
+            Z = Z * Z + C
+            IF (ABS(Z) .GT. 2.0) GO TO 99
+   30     CONTINUE
+   99     MNDLBR(IX, IY) = ITER
+   20   CONTINUE  
+   10 CONTINUE  
+C      
+      DO 40 IY = 1, NY
+        PRINT '(1H ,61I1)', ((MNDLBR(IX, IY) + 9) / 10, IX = 1, NX) 
+   40 CONTINUE
+      STOP
+      END
