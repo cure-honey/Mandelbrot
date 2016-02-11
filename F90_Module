@@ -1,0 +1,35 @@
+    MODULE m_mandel
+      IMPLICIT NONE
+      INTEGER, PARAMETER :: maxiter = 90
+    CONTAINS
+      INTEGER FUNCTION mandel(c)
+        COMPLEX, INTENT(IN) :: c
+        COMPLEX :: z
+        z = (0.0, 0.0)
+        DO mandel = 0, maxiter
+          z = z * z + c
+          IF (ABS(z) > 2.0) EXIT
+        END DO    
+      END FUNCTION mandel 
+    END MODULE m_mandel
+
+    PROGRAM mandel_main
+      USE m_mandel
+      IMPLICIT NONE
+      INTEGER, PARAMETER :: nx = 61, ny = 31
+      REAL   , PARAMETER :: x0 = -2.0, x1 = 2.0, y0 = -2.0, y1 = 2.0
+      INTEGER :: ix, iy, iter, mandelbrot(nx, ny)
+      REAL :: x, y
+      DO iy = 1, ny
+        y = y0 + (y1 - y0) * (iy - 1) / REAL(ny - 1)   
+        DO ix = 1, nx
+          x = x0 + (x1 - x0) * (ix - 1) / REAL(nx - 1)  
+          mandelbrot(ix, iy) = mandel(CMPLX(x, y)) 
+        END DO    
+      END DO
+!
+      DO iy = 1, ny
+        PRINT '(61i1)', (mandelbrot(:, iy) + 9) / 10  
+      END DO    
+      STOP
+    END PROGRAM mandel_main
