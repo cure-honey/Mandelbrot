@@ -1,0 +1,33 @@
+    module m_mandel
+      implicit none
+      integer, parameter :: maxiter = 90
+    contains
+      pure elemental integer function mandel(c)
+        complex, intent(in) :: c
+        complex :: z
+        z = (0.0, 0.0)
+        do mandel = 0, maxiter
+          z = z * z + c
+          if (abs(z) > 2.0) exit
+        end do    
+      end function mandel 
+    end module m_mandel
+
+    program mandel_main
+      use m_mandel
+      implicit none
+      integer, parameter :: nx = 61, ny = 31
+      real   , parameter :: x0 = -2.0, x1 = 2.0, y0 = -2.0, y1 = 2.0
+      integer :: ix, iy, iter, mandelbrot(nx, ny)
+      real    :: x(nx), y(ny)
+      complex :: c(nx, ny)
+      forall (ix = 1:nx) x(ix) = x0 + (x1 - x0) * (ix - 1) / real(nx - 1)
+      forall (iy = 1:ny) y(iy) = y0 + (y1 - y0) * (iy - 1) / real(ny - 1)
+      forall (ix = 1:nx, iy = 1:ny) c(ix, iy) = cmplx(x(ix), y(iy))
+      mandelbrot = mandel(c)
+!      
+      do iy = 1, ny
+        write(*, '(61i1)') (mandelbrot(:, iy) + 9) / 10  
+      end do    
+      stop
+    end program mandel_main
