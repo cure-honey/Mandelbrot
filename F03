@@ -1,0 +1,24 @@
+    program mandel
+      implicit none
+      integer, parameter :: maxiter = 90, nx = 61, ny = 31
+      real   , parameter :: x0 = -2.0, x1 = 2.0, y0 = -2.0, y1 = 2.0
+      character(len = 10), parameter :: text = '|+o0O.@*#-'  
+      integer :: ix, iy, iter, mandelbrot(nx, ny) = 0, m(nx)  
+      real, allocatable :: x(:), y(:)
+      complex :: c(nx, ny), z(nx, ny) = (0.0, 0.0)
+      x = [( (x1 - x0) / (nx - 1) * (ix - 1) + x0, ix = 1, nx )]
+      y = [( (y1 - y0) / (ny - 1) * (iy - 1) + y0, iy = 1, ny )]
+      forall (ix = 1:nx, iy = 1:ny) c(ix, iy) = cmplx(x(ix), y(iy))
+      do iter = 0, maxiter
+        where (abs(z) <= 2.0) 
+          z = z * z + c
+          mandelbrot = mandelbrot + 1
+        end where  
+      end do
+
+      do iy = 1, ny
+        m = (mandelbrot(:, iy) + 8) / 10  + 1
+        write(*, '(61a1)') (text(m(ix):m(ix)), ix = 1, nx)  
+      end do
+      stop
+    end program mandel
