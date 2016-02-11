@@ -1,0 +1,26 @@
+    PROGRAM mandel
+      IMPLICIT NONE
+      INTEGER, PARAMETER :: nx = 61, ny = 31, maxiter = 90
+      REAL   , PARAMETER :: x0 = -2.0, x1 = 2.0, y0 = -2.0, y1 = 2.0
+      INTEGER :: ix, iy, iter, mandelbrot(nx, ny)
+      REAL :: x, y
+      COMPLEX :: z, c
+      DO iy = 1, ny
+        y = y0 + (y1 - y0) * (iy - 1) / REAL(ny - 1) 
+        DO ix = 1, nx
+          x = x0 + (x1 - x0) * (ix - 1) / REAL(nx - 1)  
+          c = CMPLX(x, y)
+          z = (0.0, 0.0)
+          DO iter = 0, maxiter
+            z = z * z + c
+            IF (ABS(z) > 2.0) EXIT
+          END DO    
+          mandelbrot(ix, iy) = iter
+        END DO    
+      END DO
+!
+      DO iy = 1, ny     
+        PRINT '(61I1)', (mandelbrot(:, iy) + 9) / 10 
+      END DO          
+      STOP
+    END PROGRAM mandel
