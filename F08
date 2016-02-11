@@ -1,0 +1,35 @@
+    module m_mandel
+      implicit none
+      integer, parameter :: maxiter = 90
+    contains
+      pure integer function mandel(c)
+        complex, intent(in) :: c
+        complex :: z
+        z = (0.0, 0.0)
+        do mandel = 0, maxiter
+          z = z * z + c
+          if (abs(z) > 2.0) exit
+        end do    
+      end function mandel 
+    end module m_mandel
+
+    program mandel_main
+      use m_mandel
+      implicit none
+      integer, parameter :: nx = 61, ny = 31
+      real   , parameter :: x0 = -2.0, x1 = 2.0, y0 = -2.0, y1 = 2.0
+      integer :: ix, iy, iter, mandelbrot(nx, ny)
+      do concurrent (ix = 1:nx, iy = 1:ny)
+        block
+          real :: x, y
+          x = x0 + (x1 - x0) * (ix - 1) / real(nx - 1)
+          y = y0 + (y1 - y0) * (iy - 1) / real(ny - 1)  
+          mandelbrot(ix, iy) = mandel(cmplx(x, y))
+        end block  
+      end do    
+!      
+      do iy = 1, ny
+        write(*, '(*(i1))') (mandelbrot(:, iy) + 9) / 10  
+      end do    
+      stop
+    end program mandel_main
