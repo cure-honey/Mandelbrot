@@ -1,0 +1,32 @@
+C MANDELBROT SET
+      DIMENSION MNDLBR(61, 31)
+      COMPLEX C, Z
+      NX = 61
+      NY = 31
+      MAXIT = 91
+      X0 = -2.0
+      X1 =  2.0
+      Y0 = -2.0
+      Y1 =  2.0
+      DO 10 IY = 1, NY
+        Y = Y0 + (Y1 - Y0) * FLOAT(IY - 1) / FLOAT(NY - 1)
+        DO 20 IX = 1, NX
+          X = X0 + (X1 - X0) * FLOAT(IX - 1) / FLOAT(NX - 1)
+          Z = (0.0, 0.0)
+          C = CMPLX(X, Y)
+          NITER = 0
+          DO 30 ITER = 1, MAXIT  
+            Z = Z * Z + C
+            IF (REAL(Z)**2 + AIMAG(Z)**2 .GT. 4.0) GO TO 99
+            NITER = NITER + 1
+   30     CONTINUE
+   99     MNDLBR(IX, IY) = (NITER + 9) / 10
+   20   CONTINUE  
+   10 CONTINUE  
+C      
+      DO 40 IY = 1, NY
+        WRITE(6, 100) (MNDLBR(IX, IY), IX = 1, NX) 
+   40 CONTINUE
+  100 FORMAT(1H , 61I1)     
+      STOP
+      END 
